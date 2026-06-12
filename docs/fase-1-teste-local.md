@@ -3,7 +3,7 @@
 ## O que foi construído
 
 - Home ([index.html](../index.html)) com links para as páginas de teste de cada fase; o jogo em si ocupará essa página na fase 4.
-- Página de diagnóstico ([diagnostics/connection.html](../diagnostics/connection.html)) com um painel que mostra: URL acessada, se o contexto é seguro (HTTPS) e se as APIs de sensores de movimento existem no navegador. Serve para validar esta fase e já preparar a fase 2.
+- Página de diagnóstico ([pages/connection-diagnostics/](../pages/connection-diagnostics/)) com um painel que mostra: URL acessada, se o contexto é seguro (HTTPS) e se as APIs de sensores de movimento existem no navegador. Serve para validar esta fase e já preparar a fase 2.
 - Servidor de desenvolvimento HTTPS sem dependências ([scripts/dev-server.mjs](../scripts/dev-server.mjs)). Gera um certificado autoassinado em `.certs/` no primeiro uso (via openssl).
 - Script de redirecionamento de porta no Windows ([scripts/setup-port-forward.ps1](../scripts/setup-port-forward.ps1)).
 

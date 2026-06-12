@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>Teste dos sensores | Quem sou eu?</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Teste dos sensores</h1>
+    <p class="subtitle">Giroscópio e acelerômetro ao vivo</p>
+
+    <section class="card">
+      <div class="toolbar">
+        <button id="btn-toggle" class="btn">Iniciar</button>
+        <button id="btn-reset" class="btn btn-secondary">Zerar mín/máx</button>
+      </div>
+      <p id="status">Aguardando início…</p>
+      <p id="rates" class="muted"></p>
+    </section>
+
+    <section class="card">
+      <h2>Rotação (orientação, °)</h2>
+      <table class="sensor-table">
+        <thead>
+          <tr><th></th><th>atual</th><th>mín</th><th>máx</th></tr>
+        </thead>
+        <tbody>
+          <tr data-metric="ori-alpha"><th>alpha — eixo Z (giro no plano)</th><td class="cur">–</td><td class="min">–</td><td class="max">–</td></tr>
+          <tr data-metric="ori-beta"><th>beta — eixo X (frente/trás)</th><td class="cur">–</td><td class="min">–</td><td class="max">–</td></tr>
+          <tr data-metric="ori-gamma"><th>gamma — eixo Y (esq/dir)</th><td class="cur">–</td><td class="min">–</td><td class="max">–</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Velocidade de rotação (°/s)</h2>
+      <table class="sensor-table">
+        <thead>
+          <tr><th></th><th>atual</th><th>mín</th><th>máx</th></tr>
+        </thead>
+        <tbody>
+          <tr data-metric="rot-alpha"><th>alpha — eixo Z</th><td class="cur">–</td><td class="min">–</td><td class="max">–</td></tr>
+          <tr data-metric="rot-beta"><th>beta — eixo X</th><td class="cur">–</td><td class="min">–</td><td class="max">–</td></tr>
+          <tr data-metric="rot-gamma"><th>gamma — eixo Y</th><td class="cur">–</td><td class="min">–</td><td class="max">–</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Aceleração sem gravidade (m/s²)</h2>
+      <table class="sensor-table">
+        <thead>
+          <tr><th></th><th>atual</th><th>mín</th><th>máx</th></tr>
+        </thead>
+        <tbody>
+          <tr data-metric="acc-x"><th>x</th><td class="cur">–</td><td class="min">–</td><td class="max">–</td></tr>
+          <tr data-metric="acc-y"><th>y</th><td class="cur">–</td><td class="min">–</td><td class="max">–</td></tr>
+          <tr data-metric="acc-z"><th>z</th><td class="cur">–</td><td class="min">–</td><td class="max">–</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Como interpretar</h2>
+      <p>Com o celular na testa, o gesto de "acerto" (inclinar para baixo e voltar) deve aparecer
+        principalmente em <strong>beta</strong> ou <strong>gamma</strong>, dependendo de o aparelho
+        estar em pé ou deitado. Os valores de mín/máx ajudam a descobrir os limiares do gesto.</p>
+    </section>
+
+    <p><a href="../../index.html">&larr; Voltar para a home</a></p>
+  </main>
+
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

@@ -73,6 +73,68 @@ a {
   color: var(--accent);
 }
 
+.toolbar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.btn {
+  background: var(--accent);
+  color: #1a1a2e;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.muted {
+  opacity: 0.6;
+  font-size: 0.85rem;
+}
+
+.sensor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.sensor-table th {
+  text-align: left;
+  font-weight: 400;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.sensor-table thead th {
+  font-weight: 600;
+  opacity: 0.5;
+  text-align: right;
+}
+
+.sensor-table td {
+  text-align: right;
+  padding: 0.35rem 0 0.35rem 0.75rem;
+}
+
+.sensor-table td.cur {
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .ok {
   color: var(--accent);
   font-weight: 600;
