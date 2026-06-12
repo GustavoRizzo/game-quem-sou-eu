@@ -20,9 +20,16 @@ O desenvolvimento é **faseado**: cada fase estuda um ponto isolado antes de int
 - [assets/](assets/): recursos estáticos compartilhados (estilos; futuramente imagens, fontes).
 - [lib/](lib/): módulos JS próprios reutilizáveis entre páginas/jogo (ex.: `motion-sensors.js`).
 - [scripts/](scripts/): ferramental de dev (dev server, port-forward) — nunca vai para o navegador.
-- [docs/](docs/): documentação das fases. `tests/` fica reservada para futuros testes unitários (por isso páginas de teste/diagnóstico não usam esse nome).
+- [tests/](tests/): testes unitários — um arquivo por assunto (`<modulo>.test.mjs`). Por isso páginas de teste/diagnóstico NÃO usam o nome "tests".
+- [docs/](docs/): documentação das fases.
 
 O site é multi-página (sem SPA/roteamento de cliente), deployável no GitHub Pages direto da raiz, sem build.
+
+## Testes
+
+- Rodar: `npm test` (runner nativo `node:test`, zero dependências).
+- Novos módulos com lógica devem nascer com seu arquivo de teste em `tests/`.
+- Código que depende de browser (DOM, `window`) mantém a lógica pura em módulos separados/testáveis (ex.: [pages/sensor-test/metric-row.js](pages/sensor-test/metric-row.js)); nos testes, `window` e elementos são simulados com stubs simples — sem jsdom.
 
 ## Critérios técnicos
 

@@ -2,39 +2,7 @@
 // with min/max tracking (useful later to calibrate gesture thresholds).
 
 import { MotionSensors, isMotionSupported } from '../../lib/motion-sensors.js';
-
-class MetricRow {
-  #curEl;
-  #minEl;
-  #maxEl;
-  #min = Infinity;
-  #max = -Infinity;
-
-  constructor(tr) {
-    this.#curEl = tr.querySelector('.cur');
-    this.#minEl = tr.querySelector('.min');
-    this.#maxEl = tr.querySelector('.max');
-  }
-
-  update(value) {
-    if (value === null || value === undefined) {
-      this.#curEl.textContent = 'n/d';
-      return;
-    }
-    this.#min = Math.min(this.#min, value);
-    this.#max = Math.max(this.#max, value);
-    this.#curEl.textContent = value.toFixed(1);
-    this.#minEl.textContent = this.#min.toFixed(1);
-    this.#maxEl.textContent = this.#max.toFixed(1);
-  }
-
-  reset() {
-    this.#min = Infinity;
-    this.#max = -Infinity;
-    this.#minEl.textContent = '–';
-    this.#maxEl.textContent = '–';
-  }
-}
+import { MetricRow } from './metric-row.js';
 
 const rows = new Map(
   [...document.querySelectorAll('[data-metric]')].map((tr) => [

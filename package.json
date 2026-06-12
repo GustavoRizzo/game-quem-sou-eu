@@ -5,6 +5,7 @@
   "description": "Charades-style 'Who am I?' web game played with the phone on the forehead",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/dev-server.mjs"
+    "dev": "node scripts/dev-server.mjs",
+    "test": "node --test tests/"
   }
 }

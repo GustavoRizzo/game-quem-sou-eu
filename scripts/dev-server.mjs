@@ -7,28 +7,15 @@ import { readFile, stat } from 'node:fs/promises';
 import { existsSync, mkdirSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { networkInterfaces } from 'node:os';
-import { extname, join, normalize } from 'node:path';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { contentTypeFor, resolveSafePath } from './static-files.mjs';
 
 const PORT = Number(process.env.PORT ?? 8443);
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const CERT_DIR = join(ROOT, '.certs');
 const CERT_FILE = join(CERT_DIR, 'cert.pem');
 const KEY_FILE = join(CERT_DIR, 'key.pem');
-
-const MIME_TYPES = {
-  '.html': 'text/html; charset=utf-8',
-  '.css': 'text/css; charset=utf-8',
-  '.js': 'text/javascript; charset=utf-8',
-  '.mjs': 'text/javascript; charset=utf-8',
-  '.json': 'application/json; charset=utf-8',
-  '.svg': 'image/svg+xml',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.ico': 'image/x-icon',
-  '.webmanifest': 'application/manifest+json',
-  '.woff2': 'font/woff2',
-};
 
 function ensureCertificate() {
   if (existsSync(CERT_FILE) && existsSync(KEY_FILE)) return;
@@ -53,12 +40,10 @@ function localIps() {
 async function handleRequest(req, res) {
   try {
     const url = new URL(req.url, `https://${req.headers.host}`);
-    let pathname = decodeURIComponent(url.pathname);
-    if (pathname.endsWith('/')) pathname += 'index.html';
+    const pathname = decodeURIComponent(url.pathname);
 
-    // Resolve inside ROOT only, rejecting path traversal attempts.
-    const filePath = normalize(join(ROOT, pathname));
-    if (!filePath.startsWith(ROOT)) {
+    const filePath = resolveSafePath(ROOT, pathname);
+    if (filePath === null) {
       res.writeHead(403).end('Forbidden');
       return;
     }
@@ -72,7 +57,7 @@ async function handleRequest(req, res) {
 
     const body = await readFile(filePath);
     res.writeHead(200, {
-      'Content-Type': MIME_TYPES[extname(filePath)] ?? 'application/octet-stream',
+      'Content-Type': contentTypeFor(filePath),
       'Cache-Control': 'no-store', // always fresh during development
     });
     res.end(body);
