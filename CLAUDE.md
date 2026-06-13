@@ -10,7 +10,7 @@ O desenvolvimento é **faseado**: cada fase estuda um ponto isolado antes de int
 
 1. **Site local testável pelo celular** — ✅ concluída. Servidor HTTPS sem dependências (`npm run dev`) + port-proxy no Windows ([scripts/setup-port-forward.ps1](scripts/setup-port-forward.ps1)), pois o WSL2 fica em NAT. Detalhes em [docs/fase-1-teste-local.md](docs/fase-1-teste-local.md).
 2. **Página de teste dos sensores** — ✅ concluída e validada no aparelho. Módulo reutilizável [lib/motion-sensors.js](lib/motion-sensors.js) + página de teste [pages/sensor-test/](pages/sensor-test/). Resultados: **gamma é o eixo do gesto do jogo**; ~38 eventos/s de orientação e ~60/s de movimento. Detalhes em [docs/fase-2-sensores.md](docs/fase-2-sensores.md).
-3. **Deploy no GitHub Pages.**
+3. **Deploy no GitHub Pages** — 🔄 workflow pronto, falta criar o repo e ativar o Pages. Deploy via GitHub Actions ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)): roda os testes e publica só o site (`index.html`, `assets/`, `lib/`, `pages/`). Detalhes em [docs/fase-3-deploy.md](docs/fase-3-deploy.md).
 4. **Criação do jogo em si.**
 
 ## Estrutura de pastas
