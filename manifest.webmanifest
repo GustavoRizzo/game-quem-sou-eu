@@ -1,0 +1,25 @@
+{
+  "name": "Quem sou eu?",
+  "short_name": "Quem?",
+  "description": "Jogo de adivinhação.",
+  "lang": "pt-BR",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

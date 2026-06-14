@@ -114,3 +114,4 @@ os testes e, se passarem, publica somente os arquivos do site no GitHub Pages.
 - [Fase 1 — Site local testável pelo celular](docs/fase-1-teste-local.md)
 - [Fase 2 — Sensores de movimento](docs/fase-2-sensores.md)
 - [Fase 3 — Deploy no GitHub Pages](docs/fase-3-deploy.md)
+- [PWA — instalável como app no celular](docs/pwa.md)

@@ -13,6 +13,8 @@ O desenvolvimento é **faseado**: cada fase estuda um ponto isolado antes de int
 3. **Deploy no GitHub Pages** — 🔄 workflow pronto, falta criar o repo e ativar o Pages. Deploy via GitHub Actions ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)): roda os testes e publica só o site (`index.html`, `assets/`, `lib/`, `pages/`). Detalhes em [docs/fase-3-deploy.md](docs/fase-3-deploy.md).
 4. **Criação do jogo em si.**
 
+**PWA** (transversal, instalável como app) — 🔄 base feita: [manifest.webmanifest](manifest.webmanifest), ícones SVG (`any` + `maskable`), service worker mínimo ([sw.js](sw.js)) registrado por [lib/register-sw.js](lib/register-sw.js). Modo `standalone`, sem cache offline ainda. Detalhes em [docs/pwa.md](docs/pwa.md).
+
 ## Estrutura de pastas
 
 - Raiz: só o `index.html` (home/jogo) e arquivos de projeto.
