@@ -11,32 +11,25 @@
   <script type="module" src="lib/register-sw.js"></script>
 </head>
 <body>
-  <main class="container">
-    <h1>Quem sou eu?</h1>
-    <p class="subtitle">O jogo de adivinhar quem você é</p>
-
-    <section class="card">
-      <div class="card-header">
-        <h2>🎮 Jogar</h2>
-        <a href="pages/settings/" class="icon-link" title="Configurações">⚙️</a>
-      </div>
-      <p>Celular na testa, acerte o máximo de palavras com gestos antes do tempo acabar.</p>
-      <p style="text-align: center;"><a href="pages/game/" class="btn btn-lg">Começar a jogar</a></p>
+  <main>
+    <section class="hero">
+      <div class="hero-phone">📱</div>
+      <h1>Quem sou eu?</h1>
+      <p class="hero-sub">Celular na testa · incline para acertar · incline para pular</p>
+      <a href="pages/game/" class="btn-play">▶&nbsp; Começar a jogar</a>
+      <a href="pages/settings/" class="hero-config">⚙️ Configurações</a>
     </section>
 
-    <section class="card">
-      <h2>Em construção 🚧</h2>
-      <p>O jogo está sendo desenvolvido em fases. As páginas de teste de cada fase ficam disponíveis abaixo.</p>
-    </section>
-
-    <section class="card">
-      <h2>Páginas de teste</h2>
-      <ul class="test-list">
-        <li><a href="pages/connection-diagnostics/">Diagnóstico de conexão (HTTPS e sensores)</a></li>
-        <li><a href="pages/sensor-test/">Teste dos sensores de movimento</a></li>
-        <li><a href="pages/gesture-counter/">Contador de gestos (acerto / skip)</a></li>
-      </ul>
-    </section>
+    <div class="container">
+      <details class="card card-dev">
+        <summary>🔧 Ferramentas de desenvolvimento</summary>
+        <ul class="test-list">
+          <li><a href="pages/connection-diagnostics/">Diagnóstico de conexão (HTTPS e sensores)</a></li>
+          <li><a href="pages/sensor-test/">Teste dos sensores de movimento</a></li>
+          <li><a href="pages/gesture-counter/">Contador de gestos (acerto / skip)</a></li>
+        </ul>
+      </details>
+    </div>
   </main>
 </body>
 </html>
