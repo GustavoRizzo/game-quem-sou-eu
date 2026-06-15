@@ -40,6 +40,66 @@ let playStartMs = 0;
 let timerId = null;
 let countdownId = null;
 
+// --- Immersive mode: fullscreen + landscape lock + screen wake lock ---
+// The phone is held sideways on the forehead, so during a match we lock to
+// landscape (which on Android requires fullscreen) and keep the screen awake.
+// Everything is best-effort: a missing or denied API must never break the
+// game. These run from the "Começar" user gesture, which fullscreen and
+// orientation lock require, and are released when the match ends.
+let wakeLock = null;
+
+async function acquireWakeLock() {
+  try {
+    wakeLock = (await navigator.wakeLock?.request?.('screen')) ?? null;
+  } catch {
+    wakeLock = null; // wake lock optional
+  }
+}
+
+async function enterImmersive() {
+  try {
+    if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+    }
+  } catch {
+    /* fullscreen optional */
+  }
+  try {
+    await screen.orientation?.lock?.('landscape');
+  } catch {
+    /* orientation lock optional (e.g. desktop, or no fullscreen) */
+  }
+  await acquireWakeLock();
+}
+
+async function exitImmersive() {
+  try {
+    await wakeLock?.release?.();
+  } catch {
+    /* ignore */
+  }
+  wakeLock = null;
+  try {
+    screen.orientation?.unlock?.();
+  } catch {
+    /* ignore */
+  }
+  try {
+    if (document.fullscreenElement) await document.exitFullscreen();
+  } catch {
+    /* ignore */
+  }
+}
+
+// The OS drops the wake lock whenever the tab is hidden; re-acquire it on
+// return if a match is still going.
+document.addEventListener('visibilitychange', () => {
+  const playing = state === 'countdown' || state === 'playing';
+  if (document.visibilityState === 'visible' && playing && (!wakeLock || wakeLock.released)) {
+    acquireWakeLock();
+  }
+});
+
 // --- Feedback ---
 let audioCtx = null;
 function beep(frequency) {
@@ -136,9 +196,12 @@ const sensors = new MotionSensors({
 async function startGame() {
   if (state === 'countdown' || state === 'playing') return;
 
+  await enterImmersive(); // fullscreen + landscape + wake lock (uses this gesture)
+
   try {
     await sensors.start();
   } catch (err) {
+    await exitImmersive();
     setStatus(`Não foi possível acessar os sensores: ${err.message}`, false);
     return;
   }
@@ -153,12 +216,14 @@ async function startGame() {
     pendingDeck = buildDeck(lists);
   } catch (err) {
     sensors.stop();
+    await exitImmersive();
     setStatus(`Não foi possível carregar as palavras: ${err.message}`, false);
     return;
   }
 
   if (pendingDeck.length === 0) {
     sensors.stop();
+    await exitImmersive();
     setStatus('Nenhuma palavra disponível para jogar.', false);
     return;
   }
@@ -211,6 +276,7 @@ function endMatch() {
   state = 'results';
   clearInterval(timerId);
   sensors.stop();
+  exitImmersive(); // back to portrait, release wake lock
   const record = match.toRecord(Date.now());
   try {
     repo.save(record);
