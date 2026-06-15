@@ -11,6 +11,12 @@
   box-sizing: border-box;
 }
 
+/* The hidden attribute must always win over any display rule below (e.g. the
+   full-screen game screens and the reposition overlay set display: flex). */
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   font-family: system-ui, -apple-system, sans-serif;
@@ -295,4 +301,150 @@ body.flash-hit {
 body.flash-skip {
   background: var(--warn);
   transition: background 0s;
+}
+
+/* --- Game page --- */
+.btn-lg {
+  font-size: 1.4rem;
+  padding: 0.9rem 2.5rem;
+}
+
+/* Full-viewport takeover screens (countdown / playing) */
+.screen-full {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+}
+
+.countdown-number {
+  font-size: clamp(5rem, 30vw, 12rem);
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+
+/* The word the player must guess — fills the screen so it is readable held up */
+.word {
+  font-size: clamp(2.5rem, 12vw, 6rem);
+  font-weight: 800;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.play-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+}
+
+.play-stat {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.play-stat-unit {
+  font-size: 0.9rem;
+  opacity: 0.6;
+  margin-left: 0.15rem;
+}
+
+.reposition-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  background: var(--warn);
+  color: #fff;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.reposition-msg {
+  margin: 0;
+  font-size: clamp(1.5rem, 7vw, 3rem);
+  font-weight: 700;
+}
+
+.reposition-gauge {
+  width: min(90vw, 420px);
+  /* darker track/zone so the needle reads well over the red overlay */
+  --gauge-track-color: rgba(0, 0, 0, 0.25);
+  --gauge-zone-color: rgba(255, 255, 255, 0.85);
+  --gauge-needle-color: #1a1a2e;
+}
+
+.reposition-gauge .gauge-scale {
+  opacity: 0.85;
+}
+
+.reposition-tilt {
+  margin: 0;
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.9;
+}
+
+/* Results */
+.results-headline {
+  text-align: center;
+}
+
+.headline-number {
+  display: block;
+  font-size: 5rem;
+  font-weight: 800;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.results-secondary {
+  display: flex;
+  gap: 1rem;
+  text-align: center;
+}
+
+.results-secondary .counter-value {
+  font-size: 1.6rem;
+}
+
+.result-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.6rem;
+}
+
+.result-list li {
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.result-hit {
+  background: rgba(78, 204, 163, 0.18);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.result-skip {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  opacity: 0.45;
 }

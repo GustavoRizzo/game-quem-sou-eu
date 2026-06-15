@@ -13,6 +13,20 @@ virar o jogo completo.
 - **[lib/value-gauge.js](../lib/value-gauge.js)** — `<value-gauge>`, **Web Component** (Custom Element + Shadow DOM, CSS encapsulado) que desenha o medidor consumindo a geometria pura. Reutilizável em outras telas; tematizável por custom properties (`--gauge-zone-color`, `--gauge-needle-color`).
 - **[pages/gesture-counter/](../pages/gesture-counter/)** — página de teste: placar (+1 acerto / −1 skip), contadores, o **medidor `<value-gauge>`** (agulha da inclinação, faixa de posição válida, marcadores de acerto/skip e neutro), sliders de calibração, feedback (vibração/som/flash) e log.
 
+## O jogo em si ([pages/game/](../pages/game/))
+
+Página única com quatro telas (setup → contagem regressiva → jogando → resultados), em destaque na home. Fluxo: 3‑2‑1, depois 60s em que as palavras passam uma a uma; gesto marca acerto ou skip. Encerra no fim do tempo **ou** quando as palavras acabam. A palavra ainda na tela quando o tempo estoura **não** conta (só entram as resolvidas). Resultados: acertos em destaque, depois palavras exibidas / aproveitamento / acertos por segundo, e a lista de palavras (acertos em verde, skips em cinza).
+
+A lógica fica em módulos **puros e testados** em `lib/`; a página só cuida do que é do browser (relógio, telas, sensores, feedback):
+
+- **Listas de palavras**: dados em JSON ([assets/word-lists/](../assets/word-lists/), por ora só `animais.json`, formato `{ id, name, words }`). O registro de categorias ([lib/categories.js](../lib/categories.js)) guarda só os metadados (id + nome) — pensado para uma futura tela de "modo de jogo" listar/escolher categorias sem baixar todas as palavras. Adicionar lista = um JSON novo + uma entrada no registro.
+- **[lib/deck.js](../lib/deck.js)** — monta a pilha de cartas (`{ word, listId }`) a partir das listas escolhidas, embaralhada (Fisher–Yates com RNG injetável → determinístico no teste). Sem repetição dentro da partida; cada carta carrega de qual lista veio (para estatística futura por palavra).
+- **[lib/match.js](../lib/match.js)** — estado da partida: percorre o deck, registra cada carta como acerto/skip, sabe quando acabou e gera o registro persistível (`toRecord`).
+- **[lib/match-stats.js](../lib/match-stats.js)** — deriva os números da tela de resultados a partir do registro (acertos, exibidas, aproveitamento, acertos/s).
+- **[lib/match-repository.js](../lib/match-repository.js)** — persistência atrás de uma interface (`save`/`list`/`clear`/`export`/`import`). Hoje sobre **localStorage** (storage injetável → testável), com versionamento no payload para migração futura. Quando o volume/consulta exigir, troca-se por IndexedDB sem mexer no jogo.
+
+Cobertos por [tests/deck.test.mjs](../tests/deck.test.mjs), [tests/match.test.mjs](../tests/match.test.mjs), [tests/match-stats.test.mjs](../tests/match-stats.test.mjs) e [tests/match-repository.test.mjs](../tests/match-repository.test.mjs).
+
 ## Como a detecção funciona
 
 Tudo relativo a um **gamma neutro** (celular na testa):
@@ -38,5 +52,7 @@ onde acerto/skip disparam. Velocidade (`rotationRate`) ficou de fora do v1.
 ## Próximos passos
 
 - Calibrar os números no aparelho (neutro, limiar, cooldown).
-- Definir de onde vêm os nomes/cartas e o fluxo de uma partida (timer, resultado).
+- Tela de histórico de partidas (lendo `MatchRepository.list()`) + export/import do backup.
+- Estatísticas por palavra (quais mais acertadas/erradas), agregando os `entries` das partidas.
+- Tela de "modo de jogo" escolhendo as categorias; mais listas (países, personalidades, etc.).
 - Eventualmente, tela de configurações sobrescrevendo `game-config.js`.

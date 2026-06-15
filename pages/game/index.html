@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>Jogar | Quem sou eu?</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+  <main id="app">
+    <!-- Setup: instructions + start -->
+    <section id="screen-setup" class="container screen">
+      <h1>Quem sou eu?</h1>
+      <p class="subtitle">Celular na testa: incline para <strong>baixo</strong> quando acertar, para <strong>cima</strong> para pular.</p>
+
+      <section class="card">
+        <h2>Como jogar</h2>
+        <p>Você tem <strong>60 segundos</strong>. As palavras vão aparecendo uma a uma; faça o gesto para marcar acerto ou pular. O jogo termina quando o tempo acaba ou as palavras acabam.</p>
+        <p class="muted">Lista atual: <strong>Animais</strong></p>
+      </section>
+
+      <section class="card" style="text-align: center;">
+        <button id="btn-start" class="btn btn-lg">Começar</button>
+        <p id="status" class="muted">Toque em Começar (vamos pedir acesso aos sensores).</p>
+      </section>
+
+      <p><a href="../../index.html">&larr; Voltar para a home</a></p>
+    </section>
+
+    <!-- Countdown -->
+    <section id="screen-countdown" class="screen screen-full" hidden>
+      <div id="countdown" class="countdown-number">3</div>
+    </section>
+
+    <!-- Playing -->
+    <section id="screen-playing" class="screen screen-full" hidden>
+      <div class="play-top">
+        <span class="play-stat"><span id="timer">60</span><span class="play-stat-unit">s</span></span>
+        <span class="play-stat"><span id="play-hits">0</span><span class="play-stat-unit">✓</span></span>
+      </div>
+      <div id="word" class="word">—</div>
+      <div id="reposition" class="reposition-overlay" hidden>
+        <p class="reposition-msg">📲 Ajuste o celular na testa</p>
+        <div class="gauge reposition-gauge">
+          <value-gauge id="gauge" min="0" max="180"></value-gauge>
+          <div class="gauge-scale"><span>← acerto</span><span>neutro</span><span>skip →</span></div>
+        </div>
+        <p class="reposition-tilt">leve a agulha para a faixa verde · inclinação <span id="tilt">–</span>°</p>
+      </div>
+    </section>
+
+    <!-- Results -->
+    <section id="screen-results" class="container screen" hidden>
+      <h1>Fim de jogo!</h1>
+
+      <section class="card results-headline">
+        <span class="score-label">Acertos</span>
+        <span id="res-hits" class="headline-number">0</span>
+      </section>
+
+      <section class="card results-secondary">
+        <div class="counter">
+          <span class="counter-label">Palavras</span>
+          <span id="res-shown" class="counter-value">0</span>
+        </div>
+        <div class="counter">
+          <span class="counter-label">Aproveitamento</span>
+          <span id="res-accuracy" class="counter-value">0%</span>
+        </div>
+        <div class="counter">
+          <span class="counter-label">Acertos/s</span>
+          <span id="res-hps" class="counter-value">0</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Palavras</h2>
+        <ul id="res-words" class="result-list"></ul>
+      </section>
+
+      <div class="toolbar">
+        <button id="btn-again" class="btn">Jogar de novo</button>
+        <a href="../../index.html" class="btn btn-secondary">Home</a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./index.js"></script>
+</body>
+</html>
