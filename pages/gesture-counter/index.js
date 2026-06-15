@@ -7,6 +7,7 @@ import { MotionSensors, isMotionSupported } from '../../lib/motion-sensors.js';
 import { DEFAULT_CONFIG } from '../../lib/game-config.js';
 import { GestureDetector, GestureEvent } from '../../lib/gesture-detector.js';
 import { foreheadTilt } from '../../lib/forehead-tilt.js';
+import '../../lib/value-gauge.js'; // registers the <value-gauge> element
 
 // Live, mutable copy of the defaults; sliders edit it in place and the detector
 // reads it by reference, so changes take effect immediately.
@@ -23,32 +24,21 @@ const logEl = el('log');
 const toggleBtn = el('btn-toggle');
 const positionCard = el('position-card');
 const positionMsg = el('position-msg');
-const gaugeZone = el('gauge-zone');
-const gaugeNeutral = el('gauge-neutral');
-const gaugeNeedle = el('gauge-needle');
-const gaugeTriggerHit = el('gauge-trigger-hit');
-const gaugeTriggerSkip = el('gauge-trigger-skip');
-
-// The detector works in the unwrapped "forehead tilt" space (0..180).
-const TILT_MIN = 0;
-const TILT_MAX = 180;
+const gauge = el('gauge'); // <value-gauge>, works in forehead-tilt space (0..180)
 
 let hits = 0;
 let skips = 0;
 
-// --- Gauge: maps a tilt value (0..180) to a 0..100% horizontal position ---
-const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
-const toPct = (tilt) => ((clamp(tilt, TILT_MIN, TILT_MAX) - TILT_MIN) / (TILT_MAX - TILT_MIN)) * 100;
-
-function renderGauge(tilt) {
+// The zone and markers only change when the calibration sliders move, so they
+// are set here (not every frame); the needle value is updated per sample.
+function renderGaugeConfig() {
   const { neutralGamma: n, positionMaxDeviation: maxDev, triggerAngle: trig } = config;
-  const loPct = toPct(n - maxDev);
-  gaugeZone.style.left = `${loPct}%`;
-  gaugeZone.style.width = `${toPct(n + maxDev) - loPct}%`;
-  gaugeNeutral.style.left = `${toPct(n)}%`;
-  gaugeTriggerHit.style.left = `${toPct(n - trig)}%`;
-  gaugeTriggerSkip.style.left = `${toPct(n + trig)}%`;
-  gaugeNeedle.style.left = `${toPct(tilt)}%`;
+  gauge.zone = [n - maxDev, n + maxDev];
+  gauge.markers = [
+    { value: n, color: 'rgba(255, 255, 255, 0.5)' }, // neutral
+    { value: n - trig, color: 'var(--accent)' }, // cross here = hit
+    { value: n + trig, color: 'var(--warn)' }, // cross here = skip
+  ];
 }
 
 // --- Calibration sliders, generated from a descriptor ---
@@ -78,6 +68,7 @@ function buildSliders() {
     input.addEventListener('input', () => {
       config[key] = Number(input.value);
       render();
+      renderGaugeConfig();
     });
     render();
     row.append(
@@ -169,6 +160,7 @@ function updatePosition(tilt) {
   const inZone = Math.abs(tilt - config.neutralGamma) <= config.positionMaxDeviation;
   positionCard.classList.toggle('out', detector.outOfPosition);
   positionCard.classList.toggle('in', inZone && !detector.outOfPosition);
+  gauge.style.setProperty('--gauge-needle-color', detector.outOfPosition ? 'var(--warn)' : 'var(--text)');
   if (detector.outOfPosition) {
     positionMsg.textContent = '📲 Fora de posição — leve a agulha para a faixa verde.';
   } else if (!inZone) {
@@ -186,7 +178,7 @@ const sensors = new MotionSensors({
     const tilt = foreheadTilt(gamma);
     gammaEl.textContent = gamma.toFixed(0);
     tiltEl.textContent = tilt.toFixed(0);
-    renderGauge(tilt);
+    gauge.value = tilt;
     detector.process(tilt, performance.now());
     updatePosition(tilt);
   },
@@ -227,7 +219,8 @@ el('btn-reset').addEventListener('click', () => {
 toggleBtn.addEventListener('click', toggle);
 
 buildSliders();
-renderGauge(config.neutralGamma);
+renderGaugeConfig();
+gauge.value = config.neutralGamma;
 
 if (!isMotionSupported()) {
   setStatus(

@@ -20,7 +20,7 @@ O desenvolvimento é **faseado**: cada fase estuda um ponto isolado antes de int
 - Raiz: só o `index.html` (home/jogo) e arquivos de projeto.
 - [pages/](pages/): uma subpasta por página, contendo `index.html` + `index.js` daquela página (ex.: [pages/sensor-test/](pages/sensor-test/)). O `index.html` dá URLs limpas: `/pages/sensor-test/`.
 - [assets/](assets/): recursos estáticos compartilhados (estilos; futuramente imagens, fontes).
-- [lib/](lib/): módulos JS próprios reutilizáveis entre páginas/jogo (ex.: `motion-sensors.js`).
+- [lib/](lib/): módulos JS próprios reutilizáveis entre páginas/jogo (ex.: `motion-sensors.js`), incluindo componentes de UI como Web Components/Custom Elements (ex.: `<value-gauge>` em `value-gauge.js`, com a geometria pura separada em `gauge-geometry.js`).
 - [scripts/](scripts/): ferramental de dev (dev server, port-forward) — nunca vai para o navegador.
 - [tests/](tests/): testes unitários — um arquivo por assunto (`<modulo>.test.mjs`). Por isso páginas de teste/diagnóstico NÃO usam o nome "tests".
 - [docs/](docs/): documentação das fases.

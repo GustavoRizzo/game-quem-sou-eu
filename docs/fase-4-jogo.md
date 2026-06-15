@@ -9,7 +9,9 @@ virar o jogo completo.
 - **[lib/game-config.js](../lib/game-config.js)** — configuração default do jogo (limiares, cooldown, neutro, tolerância de posição) em um só lugar, para um futuro menu de "configurações" do usuário poder sobrescrever.
 - **[lib/forehead-tilt.js](../lib/forehead-tilt.js)** — converte o gamma cru (−90..90) numa **inclinação contínua** centrada no neutro da testa (~90), resolvendo a dobra do gamma no ±90 (ver abaixo). Coberta por [tests/forehead-tilt.test.mjs](../tests/forehead-tilt.test.mjs).
 - **[lib/gesture-detector.js](../lib/gesture-detector.js)** — máquina de estados **pura** (sem DOM/sensores) que recebe amostras de **inclinação** e emite `hit` / `skip` / `reposition` / `positioned` / `armed`. Coberta por [tests/gesture-detector.test.mjs](../tests/gesture-detector.test.mjs).
-- **[pages/gesture-counter/](../pages/gesture-counter/)** — página de teste: placar (+1 acerto / −1 skip), contadores, **medidor (agulha) do gamma** com a faixa de posição válida e o neutro marcados, sliders de calibração, feedback (vibração/som/flash) e log.
+- **[lib/gauge-geometry.js](../lib/gauge-geometry.js)** — geometria pura do medidor (valor → %), testável ([tests/gauge-geometry.test.mjs](../tests/gauge-geometry.test.mjs)).
+- **[lib/value-gauge.js](../lib/value-gauge.js)** — `<value-gauge>`, **Web Component** (Custom Element + Shadow DOM, CSS encapsulado) que desenha o medidor consumindo a geometria pura. Reutilizável em outras telas; tematizável por custom properties (`--gauge-zone-color`, `--gauge-needle-color`).
+- **[pages/gesture-counter/](../pages/gesture-counter/)** — página de teste: placar (+1 acerto / −1 skip), contadores, o **medidor `<value-gauge>`** (agulha da inclinação, faixa de posição válida, marcadores de acerto/skip e neutro), sliders de calibração, feedback (vibração/som/flash) e log.
 
 ## Como a detecção funciona
 
