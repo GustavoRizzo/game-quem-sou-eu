@@ -1,8 +1,10 @@
 # Fase 4 — O jogo (mecânica de gestos)
 
-Fase em andamento. Começou pela **mecânica central**: detectar, com o celular na
-testa, o gesto de "acerto" e o de "skip", isolado numa página de teste antes de
-virar o jogo completo.
+Fase em andamento. Começou pela **mecânica central** (detectar, com o celular na
+testa, o gesto de "acerto" e o de "skip", isolado numa página de teste) e já tem
+o **jogo jogável** em [pages/game/](../pages/game/), validado no aparelho. Falta
+calibrar os números e construir as telas das próximas releases (histórico,
+estatísticas, modo de jogo).
 
 ## Peças
 
@@ -26,6 +28,16 @@ A lógica fica em módulos **puros e testados** em `lib/`; a página só cuida d
 - **[lib/match-repository.js](../lib/match-repository.js)** — persistência atrás de uma interface (`save`/`list`/`clear`/`export`/`import`). Hoje sobre **localStorage** (storage injetável → testável), com versionamento no payload para migração futura. Quando o volume/consulta exigir, troca-se por IndexedDB sem mexer no jogo.
 
 Cobertos por [tests/deck.test.mjs](../tests/deck.test.mjs), [tests/match.test.mjs](../tests/match.test.mjs), [tests/match-stats.test.mjs](../tests/match-stats.test.mjs) e [tests/match-repository.test.mjs](../tests/match-repository.test.mjs).
+
+As estruturas de dados (`Card`, `MatchEntry`, `MatchRecord`, `MatchSummary`, `Category`) são modeladas com **JSDoc `@typedef`** nos próprios módulos `lib/`, não como classes: o "model" maduro em vanilla é tipo + dado puro (POJO), porque o record cruza a fronteira de serialização (localStorage / export JSON) e classe não sobrevive a `JSON.parse`. Comportamento (estado + operações) é que vira classe — `Match` e `MatchRepository`. Os `@typedef` dão autocomplete/checagem no editor sem build.
+
+### Comportamentos de aparelho (só na página)
+
+- **Modo imersivo durante a partida**: ao tocar em **Começar**, o jogo entra em fullscreen, **trava em paisagem** (`screen.orientation.lock('landscape')`, que no Android exige fullscreen) e segura o **Wake Lock** (`navigator.wakeLock`, re-adquirido no `visibilitychange`) para a tela não apagar. Tudo é best-effort (`try/catch`): API ausente ou permissão negada nunca quebra o jogo. Liberado ao terminar.
+- **Tela de bloqueio com o medidor**: quando o detector emite `reposition`, o overlay vermelho mostra o `<value-gauge>` ao vivo (faixa verde = posição válida) + a inclinação em graus, para a pessoa saber como ajustar — e para diagnosticar/calibrar o aparelho.
+- **Ícones em SVG inline** (não Font Awesome): para poucos ícones num PWA offline, evitar a dependência externa é mais leve e segue o padrão do projeto (favicon já é SVG).
+
+> **Lição de CSS (bug que travou o jogo)**: o atributo `hidden` esconde via a regra de baixa especificidade `[hidden] { display: none }`. Definir `display: flex` numa classe (ex.: telas full-screen, overlay) **vence** o `hidden` (mesma especificidade, regra posterior) e o elemento fica **sempre visível**. Resolvido com `[hidden] { display: none !important; }` global em [assets/styles.css](../assets/styles.css).
 
 ## Como a detecção funciona
 

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>Configurações | Quem sou eu?</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Configurações</h1>
+
+    <section class="card">
+      <h2>⏱ Duração da rodada</h2>
+      <div class="pill-options" id="duration-options"></div>
+    </section>
+
+    <section class="card">
+      <h2>📋 Listas de palavras</h2>
+      <div class="toggle-list-header">
+        <span class="muted">Selecione quais listas aparecem no jogo</span>
+        <div class="toggle-list-actions">
+          <button id="btn-all" class="btn-text">Todas</button>
+          <button id="btn-none" class="btn-text">Nenhuma</button>
+        </div>
+      </div>
+      <div id="category-list"></div>
+    </section>
+
+    <section class="card">
+      <h2>🕹 Sensibilidade do gesto</h2>
+      <p class="muted">Quanto precisa inclinar o celular para marcar acerto ou pular.</p>
+      <div class="pill-options" id="sensitivity-options"></div>
+    </section>
+
+    <div class="settings-actions">
+      <button id="btn-save" class="btn btn-lg">Salvar</button>
+      <button id="btn-reset" class="btn btn-secondary">Restaurar padrões</button>
+    </div>
+
+    <p><a href="../../index.html">&larr; Voltar para a home</a></p>
+  </main>
+  <script type="module" src="index.js"></script>
+</body>
+</html>

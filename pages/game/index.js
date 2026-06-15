@@ -15,15 +15,17 @@ import { buildDeck } from '../../lib/deck.js';
 import { Match, Result } from '../../lib/match.js';
 import { summarize } from '../../lib/match-stats.js';
 import { MatchRepository } from '../../lib/match-repository.js';
+import { SettingsRepository, sensitivityTriggerAngle } from '../../lib/settings-repository.js';
 import '../../lib/value-gauge.js'; // registers the <value-gauge> element
 
-// --- Game rules (a future settings screen could override these) ---
-const GAME_DURATION_MS = 60_000;
+// --- Load user settings ---
+const settings = SettingsRepository.load();
+const GAME_DURATION_MS = settings.durationSeconds * 1000;
 const COUNTDOWN_SECONDS = 3;
-const SELECTED_MODE = ['animais']; // category ids; one fixed list for now
+const SELECTED_MODE = settings.categories;
 const WORD_LISTS_BASE = '../../assets/word-lists/';
 
-const config = { ...DEFAULT_CONFIG };
+const config = { ...DEFAULT_CONFIG, triggerAngle: sensitivityTriggerAngle(settings.sensitivity) };
 const repo = new MatchRepository();
 const el = (id) => document.getElementById(id);
 
@@ -312,6 +314,12 @@ function setStatus(text, ok = true) {
 
 // --- Wiring ---
 configureGauge();
+
+el('setup-duration').textContent = settings.durationSeconds;
+el('setup-categories').textContent = SELECTED_MODE
+  .map((id) => categoryById(id)?.name ?? id)
+  .join(', ') || '—';
+
 el('btn-start').addEventListener('click', startGame);
 el('btn-again').addEventListener('click', () => {
   showScreen('setup');
