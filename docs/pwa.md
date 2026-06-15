@@ -21,7 +21,8 @@ O `<link rel="manifest">` está em todas as páginas; o registro do service work
 
 - **Modo de exibição**: `standalone` — sem barra de URL, mantém a barra de status do Android.
 - **Ícones em SVG** (não PNG): o Chrome moderno do Android — nosso alvo — aceita ícones SVG no manifest. Mantém o projeto sem build e sem binários. Se algum aparelho não renderizar bem, o plano B é gerar PNGs 192/512 a partir do SVG.
-- **Sem cache offline (por enquanto)**: o service worker existe só para tornar o app instalável. Não há estratégia de cache — adicionar cache-first do app shell em `sw.js` é o próximo passo natural, sem mexer no registro nem no manifest.
+- **Cache versionado por deploy (cache-first)**: o service worker serve os arquivos de um cache nomeado com a versão do build, e apaga os caches antigos ao ativar. Cada deploy é um snapshot atômico — some o problema de "HTML novo + CSS velho" causado pelo cache HTTP do GitHub Pages (`max-age=600` em tudo). Como efeito colateral, páginas já visitadas funcionam offline (não era o objetivo, mas vem de graça).
+- **Versão = SHA do commit, injetada no deploy**: o `sw.js` traz o placeholder `__BUILD_VERSION__`; o workflow ([.github/workflows/deploy.yml](../.github/workflows/deploy.yml)) troca pelo `GITHUB_SHA` ao publicar. O navegador detecta atualização comparando o `sw.js` byte a byte (ele busca o sw.js furando o cache HTTP), então qualquer mudança de versão dispara `install`/`activate`. Em dev local/LAN o placeholder fica intacto → `IS_PRODUCTION` é falso → o worker é pass-through (network-only), garantindo arquivos sempre frescos durante o desenvolvimento.
 - **Orientação não travada**: o menu é retrato e o jogo será paisagem; a decisão de travar fica para a fase 4, por tela.
 
 ## Por que os caminhos são relativos
