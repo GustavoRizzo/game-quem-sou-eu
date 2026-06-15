@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>Contador de gestos | Quem sou eu?</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Contador de gestos</h1>
+    <p class="subtitle">Na testa: incline para <strong>baixo</strong> = acerto, para <strong>cima</strong> = skip</p>
+
+    <section class="card">
+      <div class="toolbar">
+        <button id="btn-toggle" class="btn">Iniciar</button>
+        <button id="btn-reset" class="btn btn-secondary">Zerar placar</button>
+      </div>
+      <p id="status" class="muted">Toque em Iniciar para ligar os sensores.</p>
+    </section>
+
+    <section class="card score-board">
+      <div class="score-main">
+        <span class="score-label">Placar</span>
+        <span id="score" class="score-value">0</span>
+      </div>
+      <div class="score-split">
+        <div class="counter counter-hit">
+          <span class="counter-label">Acertos</span>
+          <span id="hits" class="counter-value">0</span>
+        </div>
+        <div class="counter counter-skip">
+          <span class="counter-label">Skips</span>
+          <span id="skips" class="counter-value">0</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="position-card">
+      <h2>Posição na testa</h2>
+      <p class="gamma-readout"><span id="gamma">–</span><span class="gamma-unit">° gamma</span></p>
+      <p class="muted">inclinação desdobrada: <span id="tilt">–</span>°</p>
+
+      <div class="gauge">
+        <div class="gauge-track">
+          <div class="gauge-zone" id="gauge-zone"></div>
+          <div class="gauge-trigger" id="gauge-trigger-hit"></div>
+          <div class="gauge-trigger" id="gauge-trigger-skip"></div>
+          <div class="gauge-neutral" id="gauge-neutral"></div>
+          <div class="gauge-needle" id="gauge-needle"></div>
+        </div>
+        <div class="gauge-scale"><span>← acerto</span><span>neutro</span><span>skip →</span></div>
+      </div>
+
+      <p id="position-msg" class="muted">A agulha mostra a inclinação; leve-a para a faixa verde (posição válida).</p>
+      <label class="toggle">
+        <input type="checkbox" id="invert"> Inverter direção (acerto/skip trocados)
+      </label>
+    </section>
+
+    <section class="card">
+      <h2>Feedback</h2>
+      <div class="toggles">
+        <label class="toggle"><input type="checkbox" id="fb-vibrate" checked> Vibração</label>
+        <label class="toggle"><input type="checkbox" id="fb-sound" checked> Som</label>
+        <label class="toggle"><input type="checkbox" id="fb-flash" checked> Flash na tela</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Calibração</h2>
+      <div id="sliders"></div>
+    </section>
+
+    <section class="card">
+      <h2>Log</h2>
+      <ul id="log" class="log"></ul>
+    </section>
+
+    <p><a href="../../index.html">&larr; Voltar para a home</a></p>
+  </main>
+
+  <script type="module" src="./index.js"></script>
+</body>
+</html>
