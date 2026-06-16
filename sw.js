@@ -16,7 +16,10 @@
 // developing, and the app stays installable as a PWA.
 
 const VERSION = '__BUILD_VERSION__';
-const IS_PRODUCTION = VERSION !== '__BUILD_VERSION__';
+// Check by prefix — see lib/analytics.js for why a direct string comparison
+// against the placeholder literal would always evaluate to false after the
+// sed substitution in deploy.yml stamps both lines.
+const IS_PRODUCTION = !VERSION.startsWith('__');
 const CACHE = `quem-sou-eu-${VERSION}`;
 
 self.addEventListener('install', () => self.skipWaiting());
