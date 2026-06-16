@@ -7,6 +7,7 @@ import { MotionSensors, isMotionSupported } from '../../lib/motion-sensors.js';
 import { DEFAULT_CONFIG } from '../../lib/game-config.js';
 import { GestureDetector, GestureEvent } from '../../lib/gesture-detector.js';
 import { foreheadTilt } from '../../lib/forehead-tilt.js';
+import { beep as playBeep, vibrate as playVibrate, flash as playFlash } from '../../lib/feedback.js';
 import '../../lib/value-gauge.js'; // registers the <value-gauge> element
 
 // Live, mutable copy of the defaults; sliders edit it in place and the detector
@@ -81,31 +82,18 @@ function buildSliders() {
 }
 
 // --- Feedback ---
-let audioCtx = null;
-
+// Same effects as the game (lib/feedback.js), gated per-channel by this
+// page's checkboxes so a tester can isolate sound/vibration/flash.
 function beep(frequency) {
-  if (!el('fb-sound').checked) return;
-  audioCtx ??= new (window.AudioContext || window.webkitAudioContext)();
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.frequency.value = frequency;
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.15);
+  if (el('fb-sound').checked) playBeep(frequency);
 }
 
 function vibrate(pattern) {
-  if (el('fb-vibrate').checked && navigator.vibrate) navigator.vibrate(pattern);
+  if (el('fb-vibrate').checked) playVibrate(pattern);
 }
 
 function flash(kind) {
-  if (!el('fb-flash').checked) return;
-  const cls = `flash-${kind}`;
-  document.body.classList.add(cls);
-  setTimeout(() => document.body.classList.remove(cls), 250);
+  if (el('fb-flash').checked) playFlash(kind);
 }
 
 function log(message) {

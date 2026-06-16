@@ -16,6 +16,7 @@ import { Match, Result } from '../../lib/match.js';
 import { summarize } from '../../lib/match-stats.js';
 import { MatchRepository } from '../../lib/match-repository.js';
 import { SettingsRepository, sensitivityTriggerAngle } from '../../lib/settings-repository.js';
+import { beep, vibrate, flash } from '../../lib/feedback.js';
 import '../../lib/value-gauge.js'; // registers the <value-gauge> element
 
 // --- Load user settings ---
@@ -101,33 +102,6 @@ document.addEventListener('visibilitychange', () => {
     acquireWakeLock();
   }
 });
-
-// --- Feedback ---
-let audioCtx = null;
-function beep(frequency) {
-  try {
-    audioCtx ??= new (window.AudioContext || window.webkitAudioContext)();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.frequency.value = frequency;
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.15);
-  } catch {
-    /* audio is best-effort */
-  }
-}
-function vibrate(pattern) {
-  if (navigator.vibrate) navigator.vibrate(pattern);
-}
-function flash(kind) {
-  const cls = `flash-${kind}`;
-  document.body.classList.add(cls);
-  setTimeout(() => document.body.classList.remove(cls), 250);
-}
 
 // --- Gesture handling ---
 function onGestureEvent({ type }) {
