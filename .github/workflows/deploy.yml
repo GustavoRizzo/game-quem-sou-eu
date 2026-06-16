@@ -36,6 +36,8 @@ jobs:
 
       # Stage only the deployable site, leaving dev tooling out of the publish.
       - name: Stage site
+        env:
+          GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID }}
         run: |
           mkdir _site
           cp -r index.html manifest.webmanifest sw.js assets lib pages _site/
@@ -43,6 +45,20 @@ jobs:
           # Stamp the service worker with this commit's SHA so each deploy gets a
           # unique cache version -> atomic, consistent updates (see sw.js).
           sed -i "s/__BUILD_VERSION__/${GITHUB_SHA}/" _site/sw.js
+
+          # Wire up GA4 only when a Measurement ID is configured (repo Settings >
+          # Secrets and variables > Actions > Variables > GA_MEASUREMENT_ID).
+          # Skipped entirely otherwise, so the site still deploys without
+          # analytics. The <script> tag is injected here, not checked into the
+          # HTML, so every page gets it with nothing to keep in sync (see
+          # lib/analytics.js).
+          if [ -n "$GA_MEASUREMENT_ID" ]; then
+            sed -i "s/__GA_MEASUREMENT_ID__/${GA_MEASUREMENT_ID}/" _site/lib/analytics.js
+            find _site -name '*.html' | while read -r f; do
+              rel=$(realpath --relative-to="$(dirname "$f")" _site/lib/analytics.js)
+              sed -i "s#</head>#  <script type=\"module\" src=\"${rel}\"></script>\n</head>#" "$f"
+            done
+          fi
 
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5

@@ -17,6 +17,7 @@ import { summarize } from '../../lib/match-stats.js';
 import { MatchRepository } from '../../lib/match-repository.js';
 import { SettingsRepository, sensitivityTriggerAngle } from '../../lib/settings-repository.js';
 import { beep, vibrate, flash } from '../../lib/feedback.js';
+import { track } from '../../lib/analytics.js';
 import '../../lib/value-gauge.js'; // registers the <value-gauge> element
 
 // --- Load user settings ---
@@ -228,6 +229,11 @@ function beginPlay() {
   detector.reset();
   playStartMs = Date.now();
   match = new Match(pendingDeck, { mode: SELECTED_MODE, startedAt: playStartMs });
+  track('game_start', {
+    duration: settings.durationSeconds,
+    sensitivity: settings.sensitivity,
+    categories: SELECTED_MODE.join(','),
+  });
   el('play-hits').textContent = '0';
   el('reposition').hidden = true;
   renderWord();
@@ -259,12 +265,17 @@ function endMatch() {
   } catch {
     /* persistence is best-effort; never block showing the result */
   }
-  renderResults(record);
+  const summary = summarize(record);
+  track('game_finish', {
+    hits: summary.hits,
+    shown: summary.shown,
+    accuracy: Math.round(summary.accuracy * 100),
+  });
+  renderResults(record, summary);
   showScreen('results');
 }
 
-function renderResults(record) {
-  const s = summarize(record);
+function renderResults(record, s) {
   el('res-hits').textContent = s.hits;
   el('res-shown').textContent = s.shown;
   el('res-accuracy').textContent = `${Math.round(s.accuracy * 100)}%`;
@@ -296,6 +307,7 @@ el('setup-categories').textContent = SELECTED_MODE
 
 el('btn-start').addEventListener('click', startGame);
 el('btn-again').addEventListener('click', () => {
+  track('play_again');
   showScreen('setup');
   startGame();
 });

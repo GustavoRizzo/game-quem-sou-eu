@@ -4,6 +4,7 @@ import {
   defaultSettings,
   SENSITIVITY_OPTIONS,
 } from '../../lib/settings-repository.js';
+import { track } from '../../lib/analytics.js';
 
 const DURATION_OPTIONS = [30, 60, 90, 120];
 
@@ -76,6 +77,11 @@ document.getElementById('btn-save').addEventListener('click', () => {
     return;
   }
   SettingsRepository.save(data);
+  track('settings_saved', {
+    duration: data.durationSeconds,
+    sensitivity: data.sensitivity,
+    categories_count: data.categories.length,
+  });
   const btn = document.getElementById('btn-save');
   const prev = btn.textContent;
   btn.textContent = 'Salvo ✓';
