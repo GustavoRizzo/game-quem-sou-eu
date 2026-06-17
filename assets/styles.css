@@ -618,12 +618,18 @@ body.flash-skip {
 }
 
 /* ---- Home hero ---- */
+.home-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
 .hero {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 80dvh;
   padding: 2rem 1.5rem;
   text-align: center;
   gap: 0.75rem;
@@ -691,6 +697,64 @@ body.flash-skip {
 
 .hero-config:hover {
   opacity: 0.85;
+}
+
+/* ---- About card (collapsible) ---- */
+.card-about {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.card-about:hover,
+.card-about[open] {
+  opacity: 1;
+}
+
+.card-about summary {
+  cursor: pointer;
+  font-size: 0.9rem;
+  list-style: none;
+  margin: 0;
+}
+
+.card-about summary::-webkit-details-marker {
+  display: none;
+}
+
+.card-about[open] summary {
+  margin-bottom: 0.75rem;
+}
+
+.about-text {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.about-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.about-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: var(--accent);
+}
+
+.about-link:hover {
+  text-decoration: underline;
+}
+
+.about-link svg {
+  width: 1.1em;
+  height: 1.1em;
+  fill: currentColor;
+  flex-shrink: 0;
 }
 
 /* ---- Dev tools card (collapsible) ---- */

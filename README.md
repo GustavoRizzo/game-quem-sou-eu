@@ -32,7 +32,7 @@ tudo no jogo final:
 1. ✅ Site local testável pelo celular
 2. ✅ Página de teste dos sensores de movimento
 3. ✅ Deploy no GitHub Pages
-4. 🔜 O jogo em si
+4. ✅ O jogo em si
 
 Detalhes de cada fase em [docs/](docs/).
 
