@@ -618,6 +618,11 @@ body.flash-skip {
 }
 
 /* ---- Home hero ---- */
+.home-main .container {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .home-main {
   display: flex;
   flex-direction: column;
@@ -699,29 +704,29 @@ body.flash-skip {
   opacity: 0.85;
 }
 
-/* ---- About card (collapsible) ---- */
-.card-about {
+/* ---- Support card (collapsible) ---- */
+.card-support {
   opacity: 0.6;
   transition: opacity 0.2s;
 }
 
-.card-about:hover,
-.card-about[open] {
+.card-support:hover,
+.card-support[open] {
   opacity: 1;
 }
 
-.card-about summary {
+.card-support summary {
   cursor: pointer;
   font-size: 0.9rem;
   list-style: none;
   margin: 0;
 }
 
-.card-about summary::-webkit-details-marker {
+.card-support summary::-webkit-details-marker {
   display: none;
 }
 
-.card-about[open] summary {
+.card-support[open] summary {
   margin-bottom: 0.75rem;
 }
 
@@ -755,6 +760,48 @@ body.flash-skip {
   height: 1.1em;
   fill: currentColor;
   flex-shrink: 0;
+}
+
+/* ---- PIX donation block (inside support card) ---- */
+.pix-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.pix-qr {
+  width: 180px;
+  height: 180px;
+  border-radius: 8px;
+  background: #fff;
+  padding: 6px;
+}
+
+.pix-copy {
+  background: var(--accent);
+  color: #1a1a2e;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pix-copy.copied {
+  background: #fff;
+}
+
+.pix-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.6;
+  text-align: center;
 }
 
 /* ---- Dev tools card (collapsible) ---- */

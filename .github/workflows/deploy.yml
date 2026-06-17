@@ -40,7 +40,7 @@ jobs:
           GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID }}
         run: |
           mkdir _site
-          cp -r index.html manifest.webmanifest sw.js assets lib pages _site/
+          cp -r index.html index.js manifest.webmanifest sw.js assets lib pages _site/
           touch _site/.nojekyll
           # Stamp the service worker with this commit's SHA so each deploy gets a
           # unique cache version -> atomic, consistent updates (see sw.js).
