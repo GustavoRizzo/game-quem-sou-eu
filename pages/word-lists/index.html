@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>Listas de palavras | Quem sou eu?</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1 id="page-title">Listas de palavras</h1>
+    <p class="muted" id="page-sub">Ative ou desative palavras e crie suas próprias listas.</p>
+
+    <!-- Index: all lists -->
+    <section class="card" id="view-index" hidden>
+      <div id="lists"></div>
+      <div class="editor-actions">
+        <button id="btn-new" class="btn btn-secondary">+ Nova lista</button>
+      </div>
+    </section>
+
+    <!-- Editor: one list -->
+    <section class="card" id="view-editor" hidden>
+      <div class="editor-head">
+        <h2 id="editor-name"></h2>
+        <div class="toggle-list-actions">
+          <button id="btn-all" class="btn-text">Ativar todas</button>
+          <button id="btn-none" class="btn-text">Desativar todas</button>
+        </div>
+      </div>
+
+      <div class="add-row" id="add-row" hidden>
+        <input id="new-word" class="text-input" type="text" placeholder="Adicionar palavra"
+               autocapitalize="sentences" autocomplete="off">
+        <button id="btn-add" class="btn">+</button>
+      </div>
+
+      <div id="words"></div>
+
+      <div class="editor-actions" id="custom-actions" hidden>
+        <button id="btn-rename" class="btn-text">Renomear lista</button>
+        <button id="btn-delete" class="btn-text danger">Excluir lista</button>
+      </div>
+    </section>
+
+    <p><a id="back-link" href="../settings/">&larr; Voltar para Configurações</a></p>
+  </main>
+  <script type="module" src="index.js"></script>
+</body>
+</html>

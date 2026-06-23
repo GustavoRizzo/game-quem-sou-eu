@@ -1,4 +1,4 @@
-import { CATEGORIES } from '../../lib/categories.js';
+import { listCategories } from '../../lib/categories.js';
 import {
   SettingsRepository,
   defaultSettings,
@@ -7,6 +7,12 @@ import {
 import { track } from '../../lib/analytics.js';
 
 const DURATION_OPTIONS = [30, 60, 90, 120];
+
+// Custom list names are arbitrary user input; escape before interpolating into
+// HTML so a name can never break the markup.
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+}
 
 let settings = SettingsRepository.load();
 
@@ -24,12 +30,14 @@ function renderDuration() {
 
 function renderCategories() {
   const container = document.getElementById('category-list');
-  container.innerHTML = CATEGORIES.map(
-    (cat) => `<label class="toggle-row">
-      <span>${cat.name}</span>
+  container.innerHTML = listCategories()
+    .map(
+      (cat) => `<label class="toggle-row">
+      <span>${escapeHtml(cat.name)}</span>
       <input type="checkbox" name="category" value="${cat.id}" ${settings.categories.includes(cat.id) ? 'checked' : ''}>
     </label>`
-  ).join('');
+    )
+    .join('');
 }
 
 function renderSensitivity() {

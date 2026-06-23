@@ -10,7 +10,7 @@ import { MotionSensors, isMotionSupported } from '../../lib/motion-sensors.js';
 import { DEFAULT_CONFIG } from '../../lib/game-config.js';
 import { GestureDetector, GestureEvent } from '../../lib/gesture-detector.js';
 import { foreheadTilt } from '../../lib/forehead-tilt.js';
-import { categoryById, loadCategoryWords } from '../../lib/categories.js';
+import { findCategory, loadCategoryWords } from '../../lib/categories.js';
 import { buildDeck } from '../../lib/deck.js';
 import { Match, Result } from '../../lib/match.js';
 import { summarize } from '../../lib/match-stats.js';
@@ -184,10 +184,13 @@ async function startGame() {
   }
 
   try {
+    // findCategory may return null for a custom list that was since deleted but
+    // is still listed in the saved settings; skip those.
+    const selected = SELECTED_MODE.map((id) => findCategory(id)).filter(Boolean);
     const lists = await Promise.all(
-      SELECTED_MODE.map(async (id) => ({
-        id,
-        words: await loadCategoryWords(categoryById(id), { basePath: WORD_LISTS_BASE }),
+      selected.map(async (category) => ({
+        id: category.id,
+        words: await loadCategoryWords(category, { basePath: WORD_LISTS_BASE }),
       }))
     );
     pendingDeck = buildDeck(lists);
@@ -302,7 +305,7 @@ configureGauge();
 
 el('setup-duration').textContent = settings.durationSeconds;
 el('setup-categories').textContent = SELECTED_MODE
-  .map((id) => categoryById(id)?.name ?? id)
+  .map((id) => findCategory(id)?.name ?? id)
   .join(', ') || '—';
 
 el('btn-start').addEventListener('click', startGame);

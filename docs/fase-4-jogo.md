@@ -21,13 +21,22 @@ Página única com quatro telas (setup → contagem regressiva → jogando → r
 
 A lógica fica em módulos **puros e testados** em `lib/`; a página só cuida do que é do browser (relógio, telas, sensores, feedback):
 
-- **Listas de palavras**: dados em JSON ([assets/word-lists/](../assets/word-lists/), por ora só `animais.json`, formato `{ id, name, words }`). O registro de categorias ([lib/categories.js](../lib/categories.js)) guarda só os metadados (id + nome) — pensado para uma futura tela de "modo de jogo" listar/escolher categorias sem baixar todas as palavras. Adicionar lista = um JSON novo + uma entrada no registro.
+- **Listas de palavras**: dados em JSON ([assets/word-lists/](../assets/word-lists/), formato `{ id, name, words }`). O registro de categorias ([lib/categories.js](../lib/categories.js)) guarda só os metadados (id + nome) — pensado para uma futura tela de "modo de jogo" listar/escolher categorias sem baixar todas as palavras. Adicionar lista nativa = um JSON novo + uma entrada no registro.
 - **[lib/deck.js](../lib/deck.js)** — monta a pilha de cartas (`{ word, listId }`) a partir das listas escolhidas, embaralhada (Fisher–Yates com RNG injetável → determinístico no teste). Sem repetição dentro da partida; cada carta carrega de qual lista veio (para estatística futura por palavra).
 - **[lib/match.js](../lib/match.js)** — estado da partida: percorre o deck, registra cada carta como acerto/skip, sabe quando acabou e gera o registro persistível (`toRecord`).
 - **[lib/match-stats.js](../lib/match-stats.js)** — deriva os números da tela de resultados a partir do registro (acertos, exibidas, aproveitamento, acertos/s).
 - **[lib/match-repository.js](../lib/match-repository.js)** — persistência atrás de uma interface (`save`/`list`/`clear`/`export`/`import`). Hoje sobre **localStorage** (storage injetável → testável), com versionamento no payload para migração futura. Quando o volume/consulta exigir, troca-se por IndexedDB sem mexer no jogo.
 
 Cobertos por [tests/deck.test.mjs](../tests/deck.test.mjs), [tests/match.test.mjs](../tests/match.test.mjs), [tests/match-stats.test.mjs](../tests/match-stats.test.mjs) e [tests/match-repository.test.mjs](../tests/match-repository.test.mjs).
+
+### Edição e criação de listas ([pages/word-lists/](../pages/word-lists/))
+
+O jogador pode **ativar/desativar palavra a palavra** e **criar listas próprias**, sem mexer nos JSON nativos. Os edits ficam numa camada à parte sobre localStorage:
+
+- **[lib/word-lists-repository.js](../lib/word-lists-repository.js)** — mesma arquitetura de storage injetável do `match-repository`/`settings-repository` (testável em Node, tolerante a storage ausente/corrompido). Guarda dois tipos de edição: para **listas nativas**, só o **diff** (conjunto de palavras desativadas) — assim palavras novas adicionadas num JSON numa atualização futura aparecem ativas automaticamente; para **listas próprias**, a lista inteira (`{ id, name, words: [{ text, active }] }`), com id prefixado `custom-`. Helpers puros (`effectiveWords`, `mergeCategories`, `isCustomId`) e os métodos do store são cobertos por [tests/word-lists-repository.test.mjs](../tests/word-lists-repository.test.mjs).
+- **[lib/categories.js](../lib/categories.js)** passou a mesclar as duas fontes: `listCategories()` (nativas + próprias), `findCategory(id)` (resolve ambos), `loadCategoryWords()` (só as **ativas**, aplicando o diff/estado) e `loadEditableWords()` (todas as palavras com flag, para o editor). Testes estendidos em [tests/categories.test.mjs](../tests/categories.test.mjs).
+- **[pages/word-lists/](../pages/word-lists/)** — duas vistas numa página só, escolhidas pela URL (Back do navegador funciona): sem query = índice de todas as listas (com contagem `ativas/total`) + “Nova lista”; `?id=<catId>` = editor (toggles por palavra; em lista própria: adicionar/remover palavra, renomear e excluir). Toda a lógica testável fica em `lib/`; a página é só DOM (sem teste unitário, por convenção).
+- **[pages/settings/](../pages/settings/)** lista nativas **e** próprias na seleção de "quais listas jogam", e linka para o editor. Uma lista própria nova nasce já selecionada (seu id é acrescentado às `settings.categories` na criação). O jogo ignora ids que não resolvem mais (lista própria excluída).
 
 As estruturas de dados (`Card`, `MatchEntry`, `MatchRecord`, `MatchSummary`, `Category`) são modeladas com **JSDoc `@typedef`** nos próprios módulos `lib/`, não como classes: o "model" maduro em vanilla é tipo + dado puro (POJO), porque o record cruza a fronteira de serialização (localStorage / export JSON) e classe não sobrevive a `JSON.parse`. Comportamento (estado + operações) é que vira classe — `Match` e `MatchRepository`. Os `@typedef` dão autocomplete/checagem no editor sem build.
 
@@ -66,5 +75,5 @@ onde acerto/skip disparam. Velocidade (`rotationRate`) ficou de fora do v1.
 - Calibrar os números no aparelho (neutro, limiar, cooldown).
 - Tela de histórico de partidas (lendo `MatchRepository.list()`) + export/import do backup.
 - Estatísticas por palavra (quais mais acertadas/erradas), agregando os `entries` das partidas.
-- Tela de "modo de jogo" escolhendo as categorias; mais listas (países, personalidades, etc.).
+- ~~Tela de "modo de jogo" escolhendo as categorias~~ (feito em [pages/settings/](../pages/settings/)); ~~edição/criação de listas~~ (feito em [pages/word-lists/](../pages/word-lists/)).
 - Eventualmente, tela de configurações sobrescrevendo `game-config.js`.
