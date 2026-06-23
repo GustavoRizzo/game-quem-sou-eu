@@ -279,6 +279,9 @@ function endMatch(reason = 'deck') {
   renderResults(record, summary);
 
   if (reason === 'timeout') {
+    // The word still on screen when the buzzer fires counts as a skip —
+    // it was shown to the player and should appear in the results list.
+    if (match.current !== null) match.resolve(Result.SKIP);
     buzz();
     // Three long pulses so the player with the phone on the forehead feels it
     vibrate([600, 200, 600, 200, 600]);

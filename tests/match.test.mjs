@@ -59,12 +59,14 @@ test('toRecord captures entries, mode and a derived duration', () => {
   assert.ok(typeof rec.id === 'string' && rec.id.length > 0);
 });
 
-test('an unresolved card on screen is not part of the record', () => {
-  // timer expires with 'b' still showing -> only 'a' was resolved
+test('the page can resolve the on-screen card as skip before recording timeout', () => {
+  // timer expires with 'b' still showing -> page calls resolve(SKIP) then toRecord()
   const m = new Match(makeDeck(['a', 'b']), { startedAt: 0 });
   m.resolve(Result.HIT);
+  if (m.current !== null) m.resolve(Result.SKIP); // simulates what endMatch('timeout') does
   const rec = m.toRecord(60000);
-  assert.equal(rec.entries.length, 1);
+  assert.equal(rec.entries.length, 2);
+  assert.deepEqual(rec.entries[1], { word: 'b', listId: 'animais', result: 'skip' });
 });
 
 test('duration never goes negative', () => {
