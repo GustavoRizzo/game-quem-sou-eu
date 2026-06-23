@@ -604,6 +604,71 @@ body.flash-skip {
   transform: translateX(1.1rem);
 }
 
+/* --- Settings: grouped category rows with a per-list edit link --- */
+.group-label {
+  margin: 1rem 0 0.25rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.5;
+}
+
+.group-label:first-child {
+  margin-top: 0.25rem;
+}
+
+.cat-name {
+  cursor: pointer;
+  flex: 1;
+}
+
+.cat-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.cat-edit {
+  display: inline-flex;
+  color: var(--text);
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+
+.cat-edit:hover {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.cat-edit svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: currentColor;
+  display: block;
+}
+
+/* "Create new list" call-to-action under the category list */
+.new-list-actions {
+  margin-top: 1rem;
+}
+
+.btn-new-list {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.btn-new-list svg {
+  width: 1.2em;
+  height: 1.2em;
+  fill: currentColor;
+  display: block;
+}
+
 /* --- Settings: action buttons --- */
 .settings-actions {
   display: flex;
