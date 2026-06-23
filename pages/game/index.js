@@ -16,7 +16,7 @@ import { Match, Result } from '../../lib/match.js';
 import { summarize } from '../../lib/match-stats.js';
 import { MatchRepository } from '../../lib/match-repository.js';
 import { SettingsRepository, sensitivityTriggerAngle } from '../../lib/settings-repository.js';
-import { beep, vibrate, flash } from '../../lib/feedback.js';
+import { beep, vibrate, flash, buzz } from '../../lib/feedback.js';
 import { track } from '../../lib/analytics.js';
 import '../../lib/value-gauge.js'; // registers the <value-gauge> element
 
@@ -130,7 +130,7 @@ function score(result, kind, freq, vib) {
   const next = match.resolve(result);
   el('play-hits').textContent = match.hits;
   if (next === null) {
-    endMatch(); // deck exhausted
+    endMatch('deck');
     return;
   }
   renderWord();
@@ -250,13 +250,15 @@ function tick() {
   const remaining = GAME_DURATION_MS - (Date.now() - playStartMs);
   if (remaining <= 0) {
     el('timer').textContent = '0';
-    endMatch(); // time is up
+    endMatch('timeout');
     return;
   }
   el('timer').textContent = Math.ceil(remaining / 1000);
 }
 
-function endMatch() {
+const TIMEOUT_DISPLAY_MS = 2000;
+
+function endMatch(reason = 'deck') {
   if (state !== 'playing') return;
   state = 'results';
   clearInterval(timerId);
@@ -275,7 +277,19 @@ function endMatch() {
     accuracy: Math.round(summary.accuracy * 100),
   });
   renderResults(record, summary);
-  showScreen('results');
+
+  if (reason === 'timeout') {
+    buzz();
+    // Three long pulses so the player with the phone on the forehead feels it
+    vibrate([600, 200, 600, 200, 600]);
+    el('timeout-overlay').hidden = false;
+    setTimeout(() => {
+      el('timeout-overlay').hidden = true;
+      showScreen('results');
+    }, TIMEOUT_DISPLAY_MS);
+  } else {
+    showScreen('results');
+  }
 }
 
 function renderResults(record, s) {
